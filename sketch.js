@@ -55,8 +55,11 @@ function buttonPressed(b) {
 }
 
 function connectToGamePad() {
-    var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+  var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
   if (!gamepads) {
+    return;
+  }
+  if (gamepads[0] === null) {
     return;
   }
   //switch controller
