@@ -1,33 +1,41 @@
+var ghost;
+
 function setup() {
-  createCanvas(720, 400);
-  
-  // setupScoreLabel();
+  createCanvas(800,300);
+
   setupTaskLabel();
+
+  //create a sprite and add the 3 animations
+  ghost = createSprite(100, 150, 50, 100);
+  
+  var myAnimation = ghost.addAnimation("floating", "assets/ghost_standing0001.png", "assets/ghost_standing0007.png");
+  //the vertical offset to make the transition between floating and moving look better
+  myAnimation.offY = 18;
+  ghost.addAnimation("moving", "assets/ghost_walk0001.png", "assets/ghost_walk0004.png");
+  ghost.addAnimation("spinning", "assets/ghost_spin0001.png", "assets/ghost_spin0003.png");
 }
-var x = 40;
-var speed = 8;
-var limit = 500;
-var backwards = false;
 var TaskElem;
 var taskList = ['up', 'down', 'left', 'right'];
 var task = taskList[Math.floor(Math.random()*taskList.length)];
-
 
 function draw() {
   background(200);
   stroke(50);
   fill(100);
-  rect(x, 120, 120, 40);
-  if ((x < limit && !backwards) || (backwards && x < limit))  {
-    x += speed;
-    limit = 500;
-    backwards = false;
-  } else {
-    x -= speed;
-    limit = 120;
-    backwards = true;
-  };
-    connectToGamePad();
+  connectToGamePad();
+  drawSprites();
+}
+
+function ghostFloat() {
+  ghost.changeAnimation("floating");
+  ghost.velocity.x = 0;
+}
+function ghostMove() {
+  ghost.changeAnimation("moving");
+  //unflip 
+  ghost.mirrorX(1);
+  ghost.velocity.x = 2;
+  setTimeout(ghostFloat, 200);
 }
 
 function keyPressed() {
@@ -86,6 +94,7 @@ function setupStage() {
 
 function checkPressed(value) {
   if (task == value) {
+    ghostMove();
     task = taskList[Math.floor(Math.random()*taskList.length)];
     taskElem.html(`Press ${task}`);
   } else {
